@@ -1,0 +1,54 @@
+/*******************************************************************************************
+  SIMPL+ Module Information
+*******************************************************************************************/
+/*
+Dealer Name:		ControlWorks Consulting, LLC
+System Name:		Day and Time to Analog
+Programmer:			lincoln@controlworks.com
+Comments:			Copyright (C) 2007 ControlWorks Consulting, LLC
+					All rights reserved - Use subject to license
+*/
+/*******************************************************************************************
+  Compiler Directives
+*******************************************************************************************/
+#SYMBOL_NAME "Date and Time To Analog v1 (cw)"
+#HINT "Reports system day of week and time to analog value"
+#CATEGORY "16" // Time/Date
+#DEFAULT_VOLATILE
+#ENABLE_STACK_CHECKING
+#HELP_BEGIN
+	This module reports the day of week (0 = sunday through 6 = saturday)
+	and time in minutes (0 = 12:00am to 1440 = 11:59pm
+#HELP_END
+
+/*******************************************************************************************
+  DIGITAL, ANALOG and SERIAL INPUTS and OUTPUTS
+*******************************************************************************************/
+DIGITAL_INPUT update; 
+ANALOG_OUTPUT day_of_week;
+ANALOG_OUTPUT time_in_minutes; 
+/*******************************************************************************************
+  Event Handlers
+*******************************************************************************************/
+PUSH update {
+	INTEGER iDayOfWeek, iCalculatedTime;
+	// This function will only update the module's outputs if the calculated value has changed
+	iDayOfWeek = GETDAYOFWEEKNUM();
+	iCalculatedTime = ((GETHOURNUM() * 60) + GETMINUTESNUM());
+	
+	IF (iDayOfWeek <> day_of_week) 
+		day_of_week = iDayOfWeek; 
+	
+	IF (iCalculatedTime <> time_in_minutes)
+		time_in_minutes = iCalculatedTime; 
+}
+
+/*******************************************************************************************
+  Main()
+*******************************************************************************************/
+Function Main()
+{
+	day_of_week = GETDAYOFWEEKNUM();
+	time_in_minutes = ((GETHOURNUM() * 60) + GETMINUTESNUM());	    
+}
+
